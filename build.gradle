@@ -13,6 +13,10 @@ android {
     compileSdkVersion 'Google Inc.:Google APIs:23'
     buildToolsVersion '24.0.1'
 
+    defaultConfig {
+        minSdkVersion 10
+    }
+
     buildTypes {
         release {
             //runProguard false
@@ -20,4 +24,12 @@ android {
             proguardFile getDefaultProguardFile('proguard-android.txt')
         }
     }
+}
+
+repositories {
+  jcenter()
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:24.2.0'
 }
