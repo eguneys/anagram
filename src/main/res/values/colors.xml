@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+  <color name="mp_50">#fffdfb</color>
+  <color name="mp_100">#f9d1b5</color>
+  <color name="mp_200">#f5b081</color>
+  <color name="mp_300">#ef873f</color>
+  <color name="mp_400">#ed7522</color>
+  <color name="mp_500">#df6612</color>
+  <color name="mp_600">#c35910</color>
+  <color name="mp_700">#a64c0d</color>
+  <color name="mp_800">#8a3f0b</color>
+  <color name="mp_900">#6e3209</color>
+  <color name="mp_A100">#fffdfb</color>
+  <color name="mp_A200">#f9d1b5</color>
+  <color name="mp_A400">#ed7522</color>
+  <color name="mp_A700">#a64c0d</color>
+
+
   <color name="primary">#E91E63</color>
   <color name="primary_light">#F8BBD0</color>
   <color name="primary_dark">#C2185B</color>

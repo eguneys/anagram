@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:custom="http://schemas.android.com/apk/res/com.example.oyun"
+
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@color/primary"
     >
   <Button
     android:id="@+id/buttonAnagram"
@@ -12,4 +15,128 @@
     android:textColor="@android:color/black"
     android:onClick="playGame"
     />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:id="@+id/text1"
+      style="@style/text1"
+      android:text="ANAGRAM"
+      />
+
+  <GridLayout
+      android:orientation="horizontal"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:columnCount="3"
+      >
+    <com.example.oyun.SquareView
+        android:id="@+id/t1"
+        style="@style/square80"
+        custom:text="A"
+        />
+    <com.example.oyun.SquareView
+        android:id="@+id/t2"
+        style="@style/square80"
+        custom:text="N"
+        />
+    <com.example.oyun.SquareView
+        android:id="@+id/t3"
+        style="@style/square80"
+        custom:text="A"
+        />
+    <com.example.oyun.SquareView
+        android:id="@+id/t3"
+        style="@style/square80"
+        custom:text="G"
+        />
+    <com.example.oyun.SquareView
+        android:id="@+id/t3"
+        style="@style/square80"
+        custom:text="R"
+        />
+    <com.example.oyun.SquareView
+        android:id="@+id/t3"
+        style="@style/square80"
+        custom:text="A"
+        />
+    <com.example.oyun.SquareView
+        android:id="@+id/t3"
+        style="@style/square80"
+        custom:text="M"
+        />
+    <com.example.oyun.SquareView
+        android:id="@+id/t3"
+        style="@style/square80"
+        custom:text="X"
+        />
+    <com.example.oyun.SquareView
+        android:id="@+id/t3"
+        style="@style/square80"
+        custom:text="X"
+        />
+  </GridLayout>
+
+  <!-- <RelativeLayout -->
+  <!--     android:id="@+id/table1" -->
+  <!--     android:layout_width="wrap_content" -->
+  <!--     android:layout_height="wrap_content" -->
+  <!--     android:layout_gravity="center" -->
+  <!--     > -->
+
+  <!--   <com.example.oyun.SquareView -->
+  <!--       android:id="@+id/t1" -->
+  <!--       custom:text="A" -->
+  <!--       /> -->
+  <!--   <SquareView -->
+  <!--       android:id="@+id/t2" -->
+  <!--       android:layout_toRightOf="@+id/t1" -->
+  <!--       custom:text="B" -->
+  <!--       /> -->
+  <!--   <SquareView -->
+  <!--       android:id="@+id/t3" -->
+  <!--       android:layout_toRightOf="@+id/t2" -->
+  <!--       custom:text="C" -->
+  <!--       /> -->
+
+
+  <!--   <SquareView -->
+  <!--       android:id="@+id/t11" -->
+  <!--       android:layout_below="@+id/t1" -->
+  <!--       custom:text="D" -->
+  <!--       /> -->
+  <!--   <SquareView -->
+  <!--       android:id="@+id/t12" -->
+  <!--       android:layout_toRightOf="@+id/t11" -->
+  <!--       android:layout_below="@+id/t2" -->
+  <!--       custom:text="E" -->
+  <!--       /> -->
+  <!--   <SquareView -->
+  <!--       android:id="@+id/t13" -->
+  <!--       android:layout_toRightOf="@+id/t12" -->
+  <!--       android:layout_below="@+id/t3" -->
+  <!--       custom:text="F" -->
+  <!--       /> -->
+
+  <!--   <SquareView -->
+  <!--       android:id="@+id/t21" -->
+  <!--       android:layout_below="@+id/t11" -->
+  <!--       custom:text="D" -->
+  <!--       /> -->
+  <!--   <SquareView -->
+  <!--       android:id="@+id/t22" -->
+  <!--       android:layout_toRightOf="@+id/t21" -->
+  <!--       android:layout_below="@+id/t12" -->
+  <!--       custom:text="E" -->
+  <!--       /> -->
+  <!--   <SquareView -->
+  <!--       android:id="@+id/t23" -->
+  <!--       android:layout_toRightOf="@+id/t22" -->
+  <!--       android:layout_below="@+id/t13" -->
+  <!--       custom:text="F" -->
+  <!--       /> -->
+  <!-- </RelativeLayout> -->
+
 </LinearLayout>
