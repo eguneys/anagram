@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/com.example.oyun"
+    android:orientation="horizontal"
+    android:columnCount="3">
+
+  <com.example.oyun.SquareView
+      android:id="@+id/t1"
+      style="@style/square80"
+      custom:text="A"
+      />
+  <com.example.oyun.SquareView
+      android:id="@+id/t2"
+      style="@style/square80"
+      custom:text="N"
+      />
+  <com.example.oyun.SquareView
+      android:id="@+id/t3"
+      style="@style/square80"
+      custom:text="A"
+      />
+  <com.example.oyun.SquareView
+      android:id="@+id/t4"
+      style="@style/square80"
+      custom:text="G"
+      />
+  <com.example.oyun.SquareView
+      android:id="@+id/t5"
+      style="@style/square80"
+      custom:text="R"
+      />
+  <com.example.oyun.SquareView
+      android:id="@+id/t6"
+      style="@style/square80"
+      custom:text="A"
+      />
+  <com.example.oyun.SquareView
+      android:id="@+id/t7"
+      style="@style/square80"
+      custom:text="M"
+      />
+  <com.example.oyun.SquareView
+      android:id="@+id/t8"
+      style="@style/square80"
+      custom:text="X"
+      />
+  <com.example.oyun.SquareView
+      android:id="@+id/t9"
+      style="@style/square80"
+      custom:text="X"
+      />
+</GridLayout>

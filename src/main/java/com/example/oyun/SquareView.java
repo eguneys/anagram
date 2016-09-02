@@ -10,9 +10,18 @@ import android.graphics.RectF;
 
 import android.view.View;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.animation.ArgbEvaluator;
+
 import android.util.AttributeSet;
 import android.content.res.TypedArray;
 
+
+//TextDrawable https://github.com/amulyakhare/TextDrawable/blob/master/library/src/main/java/com/amulyakhare/textdrawable/TextDrawable.java
 public class SquareView extends View
 {
 
@@ -27,6 +36,13 @@ public class SquareView extends View
     private Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private String mLetter;
+
+    private boolean isMarked;
+
+    private AnimatorSet animatorSet;
+
+    private ValueAnimator textAnimator;
+    private ValueAnimator squareAnimator;
 
     public SquareView(Context context) {
         super(context);
@@ -55,6 +71,82 @@ public class SquareView extends View
         textPaint.setColor(TEXT_COLOR);
         Typeface typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
         textPaint.setTypeface(typeface);
+
+        final ArgbEvaluator argbEvaluator = new ArgbEvaluator();
+
+        squareAnimator = ValueAnimator.ofObject(argbEvaluator, START_COLOR, TEXT_COLOR);
+        textAnimator = ValueAnimator.ofObject(argbEvaluator, TEXT_COLOR, START_COLOR);
+
+        squareAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    int value = (int) animator.getAnimatedValue();
+                    setSquareColor(value);
+                }
+            });
+
+        textAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    int value = (int) animator.getAnimatedValue();
+                    setTextColor(value);
+                }
+            });
+
+        //animatorSet = new AnimatorSet();
+        //animatorSet.playTogether(squareAnimator, textAnimator);
+    }
+
+    public boolean getMarked() {
+        return isMarked;
+    }
+
+    public String getMark() {
+        return mLetter;
+    }
+
+    public void setMark() {
+        boolean tmp = isMarked;
+        isMarked = true;
+        if (tmp != isMarked)
+            invalidateAnimation();
+    }
+
+    public void resetMark() {
+        boolean tmp = isMarked;
+        isMarked = false;
+        if (tmp != isMarked)
+            invalidateAnimation();
+    }
+
+    private void invalidateAnimation() {
+        if (isMarked) {
+            squareAnimator.start();
+            textAnimator.start();
+        } else {
+            squareAnimator.reverse();
+            textAnimator.reverse();            
+        }
+    }
+
+    public void setTextColor(int color) {
+        textPaint.setColor(color);
+        invalidate();
+    }
+
+    public void setSquareColor(int color) {
+        squarePaint.setColor(color);
+        invalidate();
+    }
+
+    public int getTextColor() {
+        return textPaint.getColor();
+    }
+
+    public int getSquareColor() {
+        return squarePaint.getColor();
+    }
+
+    public void setTextSize(int size) {
+        this.textSize = TEXT_SIZE * getResources().getDisplayMetrics().scaledDensity;
     }
 
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
@@ -71,8 +163,7 @@ public class SquareView extends View
 
         textPaint.setTextSize(this.textSize);
         textPaint.setTextAlign(Paint.Align.CENTER);
-        //canvas.drawText("A", width - 10, height - 10, textPaint);
         canvas.drawText(mLetter, width / 2f, height / 2f - ((textPaint.descent() + textPaint.ascent()) / 2f), textPaint);
-        //canvas.drawText("A", 10, 10, textPaint);
     }
 }
+
