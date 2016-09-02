@@ -20,15 +20,23 @@ import android.widget.GridLayout;
 import android.util.AttributeSet;
 import android.content.res.TypedArray;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class AnagramView extends GridLayout
 {
 
     private MarkedSquareListener listener;
 
-    private Rect hitRect = new Rect();
-    private SquareView[] ss;
+    private String mAnagram = "";
 
-    private java.util.List<Integer> markedSquares;
+    private SquareView[] ss;
+    private Rect hitRect = new Rect();
+
+    private List<Integer> markedSquares;
+
+    private final List<Integer> allSquares = java.util.Arrays.asList(0, 1, 2, 3, 4, 5, 6);
+    private List<Integer> allSquaresShuffle = java.util.Arrays.asList(0, 1, 2, 3, 4, 5, 6);
 
     public AnagramView(Context context) {
         super(context);
@@ -42,7 +50,7 @@ public class AnagramView extends GridLayout
                                     0, 0);
 
         try {
-
+            
         } finally {
             a.recycle();
         }
@@ -67,6 +75,23 @@ public class AnagramView extends GridLayout
 
         markedSquares = new java.util.ArrayList<Integer>();
     }
+
+    public String getAnagram() {
+        return mAnagram;
+    }
+
+    public void setAnagram(String anagram) {
+        this.mAnagram = anagram;
+
+        java.util.Collections.shuffle(allSquaresShuffle);
+
+        for (int i : allSquares) {
+            int randomI = allSquaresShuffle.get(i);
+            ss[i].setText(this.mAnagram.charAt(randomI) + "");
+        }
+        invalidate();
+    }
+
 
     public String getMarkedSquares() {
         StringBuilder sb = new StringBuilder();
@@ -102,16 +127,22 @@ public class AnagramView extends GridLayout
             listener.onMarkedChange(getMarkedSquares());
             break;
         case MotionEvent.ACTION_UP:
-            // for (int i = 0; i < ss.length; i++) {
-            //     ss[i].resetMark();
-            // }
+            String gms = getMarkedSquares();
+
             for (int i : markedSquares) {
                 ss[i].resetMark();
             }
-
             markedSquares.clear();
 
-            listener.onMarkedChange(getMarkedSquares());
+            listener.onMarkedChange(gms);
+            System.out.println(mAnagram + "," + gms);
+            System.out.println(mAnagram.equals(gms));
+
+            if (mAnagram.equals(gms)) {
+                listener.onMarkedSuccess();
+            } else {
+                listener.onMarkedCancel(gms);
+            }
             break;
         }
         return true;
@@ -123,5 +154,7 @@ public class AnagramView extends GridLayout
 
     public interface MarkedSquareListener {
         public void onMarkedChange(String markedSquares);
+        public void onMarkedCancel(String markedSquares);
+        public void onMarkedSuccess();
     }
 }

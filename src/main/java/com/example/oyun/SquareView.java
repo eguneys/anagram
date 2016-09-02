@@ -117,6 +117,11 @@ public class SquareView extends View
             invalidateAnimation();
     }
 
+    public void setText(String s) {
+        this.mLetter = s;
+        invalidate();
+    }
+
     private void invalidateAnimation() {
         if (isMarked) {
             squareAnimator.start();
