@@ -74,8 +74,8 @@ public class SquareView extends View
 
         final ArgbEvaluator argbEvaluator = new ArgbEvaluator();
 
-        squareAnimator = ValueAnimator.ofObject(argbEvaluator, START_COLOR, TEXT_COLOR);
-        textAnimator = ValueAnimator.ofObject(argbEvaluator, TEXT_COLOR, START_COLOR);
+        squareAnimator = ValueAnimator.ofObject(argbEvaluator, START_COLOR, TEXT_COLOR).setDuration(200);
+        textAnimator = ValueAnimator.ofObject(argbEvaluator, TEXT_COLOR, START_COLOR).setDuration(200);
 
         squareAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animator) {

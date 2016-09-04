@@ -12,6 +12,13 @@ import android.content.Intent;
 
 public class Main extends Activity
 {
+
+    TextView wordText;
+    TextView anagramText;
+    AnagramView anagramView;
+
+    int foundWords = 0;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -19,8 +26,12 @@ public class Main extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        final TextView anagramText = (TextView) findViewById(R.id.text1);
-        final AnagramView anagramView = (AnagramView) findViewById(R.id.anagram1);
+        wordText = (TextView) findViewById(R.id.wordText);
+
+        anagramText = (TextView) findViewById(R.id.text1);
+        anagramView = (AnagramView) findViewById(R.id.anagram1);
+
+        System.out.println(wordText);
 
         anagramView.setAnagram("ANAGRAM");
 
@@ -48,8 +59,15 @@ public class Main extends Activity
                 public void onMarkedSuccess() {
                     int rWord = gen.nextInt(words.length - 1);
                     anagramView.setAnagram(words[rWord]);
+
+                    invalidateScores();
                 }
             });
+    }
+
+    public void invalidateScores() {
+        foundWords++;
+        wordText.setText(foundWords + "");
     }
 
     public void playGame(View view) {
