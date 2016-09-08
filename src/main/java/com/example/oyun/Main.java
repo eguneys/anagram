@@ -26,12 +26,8 @@ public class Main extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        wordText = (TextView) findViewById(R.id.wordText);
-
         anagramText = (TextView) findViewById(R.id.text1);
         anagramView = (AnagramView) findViewById(R.id.anagram1);
-
-        System.out.println(wordText);
 
         anagramView.setAnagram("ANAGRAM");
 
@@ -47,8 +43,13 @@ public class Main extends Activity
                 java.util.Random gen = new java.util.Random();
 
                 public void onMarkedCancel(String markedSquares) {
-                    anagramText.setText("");
-                    anagramView.setAnagram(anagramView.getAnagram());
+                    anagramText.animate().alpha(0).setListener(new android.animation.AnimatorListenerAdapter() {
+                            public void onAnimationEnd(android.animation.Animator animator) {
+                                anagramText.setText("");
+                                anagramText.setAlpha(1);
+                                //anagramView.setAnagram(anagramView.getAnagram());
+                            }
+                        });
                 }
 
                 public void onMarkedChange(String markedSquares) {
@@ -67,7 +68,6 @@ public class Main extends Activity
 
     public void invalidateScores() {
         foundWords++;
-        wordText.setText(foundWords + "");
     }
 
     public void playGame(View view) {

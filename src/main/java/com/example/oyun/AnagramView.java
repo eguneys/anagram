@@ -61,6 +61,10 @@ public class AnagramView extends GridLayout
     private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.view_anagram, this, true);
 
+        
+        GridLayout layout = (GridLayout) findViewById(R.id.grid1);
+        layout.setClipChildren(false);
+
         ss = new SquareView[] {
             (SquareView) findViewById(R.id.t1),
             (SquareView) findViewById(R.id.t2),
@@ -87,7 +91,7 @@ public class AnagramView extends GridLayout
 
         for (int i : allSquares) {
             int randomI = allSquaresShuffle.get(i);
-            ss[i].setText(this.mAnagram.charAt(randomI) + "");
+            ss[i].popText(this.mAnagram.charAt(randomI) + "");
         }
         invalidate();
     }
@@ -119,8 +123,8 @@ public class AnagramView extends GridLayout
                     // add to list if new mark
                     if (!ss[i].getMarked()) {
                         markedSquares.add(i);
+                        ss[i].setMark(true);
                     }
-                    ss[i].setMark();
                 }
             }
 
@@ -128,21 +132,36 @@ public class AnagramView extends GridLayout
             break;
         case MotionEvent.ACTION_UP:
             String gms = getMarkedSquares();
+            boolean isSuccess = mAnagram.equals(gms);
 
+
+            // TODO delay until animation end
             for (int i : markedSquares) {
-                ss[i].resetMark();
+                ss[i].setMark(false);
             }
-            markedSquares.clear();
 
-            listener.onMarkedChange(gms);
-            System.out.println(mAnagram + "," + gms);
-            System.out.println(mAnagram.equals(gms));
+            if (isSuccess) {
+                ss[markedSquares.get(markedSquares.size() - 1)].setAnimationListener(new SquareView.SquareAnimationListener() {
+                        public void onSquarePop() {
+                            
+                        };
 
-            if (mAnagram.equals(gms)) {
-                listener.onMarkedSuccess();
+                        public void onSquareVanish() {
+                            listener.onMarkedSuccess();
+                        };
+                    });
+                for (int i : markedSquares) {
+                    ss[i].setVisible(false);
+                }
             } else {
+                for (int i : markedSquares) {
+                    ss[i].shake();
+                }
                 listener.onMarkedCancel(gms);
             }
+
+            markedSquares.clear();
+            listener.onMarkedChange(gms);
             break;
         }
         return true;

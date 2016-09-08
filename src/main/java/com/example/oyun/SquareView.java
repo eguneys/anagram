@@ -2,6 +2,7 @@ package com.example.oyun;
 
 import android.content.Context;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
@@ -10,6 +11,12 @@ import android.graphics.RectF;
 
 import android.view.View;
 
+import android.view.animation.AnticipateInterpolator;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.CycleInterpolator;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -17,32 +24,62 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.animation.ArgbEvaluator;
 
+
 import android.util.AttributeSet;
 import android.content.res.TypedArray;
-
 
 //TextDrawable https://github.com/amulyakhare/TextDrawable/blob/master/library/src/main/java/com/amulyakhare/textdrawable/TextDrawable.java
 public class SquareView extends View
 {
 
+    private SquareAnimationListener listener;
+
     private static final int TEXT_SIZE = 50;
-    private static final int TEXT_COLOR = 0xFF000000;
-    private static final int START_COLOR = 0xFFFFFFFF;
+    private static final int TEXT_COLOR = 0xFFFFFFFF;
+    private static final int START_COLOR = 0xFF000000;
+
+
+    private float maxRotateShake = 8;
+    private float maxRotateDegrees = 45;
+    private long vanishScaleDelay = 100;
 
     private RectF squareBounds;
     private float textSize;
-    
+
+    private Bitmap tempBitmap;
+    private Canvas tempCanvas;
+
     private Paint squarePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private Paint alphaPaint = new Paint(Paint.ANTI_ALIAS_FLAG |
+                                         Paint.FILTER_BITMAP_FLAG |
+                                         Paint.DITHER_FLAG);
 
     private String mLetter;
 
-    private boolean isMarked;
-
-    private AnimatorSet animatorSet;
+    private boolean isMarked = false;
+    private boolean isVisible = true;
 
     private ValueAnimator textAnimator;
     private ValueAnimator squareAnimator;
+
+
+    private ValueAnimator rotateAnimator;
+    private ValueAnimator scaleAnimator;
+    private AnimatorSet vanishAnimatorSet;
+
+    private ValueAnimator scaleOutAnimator;
+    private ValueAnimator alphaOnAnimator;
+
+    private AnimatorSet popAnimatorSet;
+
+    private ValueAnimator shakeAnimator;
+
+    private ValueAnimator markAnimator;
+
+    private float rotateProgress = 0f;
+    private float scaleProgress = 1f;
+    private float alphaProgress = 1f;
 
     public SquareView(Context context) {
         super(context);
@@ -91,8 +128,105 @@ public class SquareView extends View
                 }
             });
 
-        //animatorSet = new AnimatorSet();
-        //animatorSet.playTogether(squareAnimator, textAnimator);
+        rotateAnimator = ValueAnimator.ofFloat(0f, 1f);
+        rotateAnimator.setDuration(300L + vanishScaleDelay);
+
+        rotateAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    float value = (float) animator.getAnimatedValue();
+                    setRotateProgress(value * maxRotateDegrees);
+                }                
+            });
+
+        scaleAnimator = ValueAnimator.ofFloat(1f, 0f);
+        scaleAnimator.setStartDelay(vanishScaleDelay);
+
+        scaleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    float value = (float) animator.getAnimatedValue();
+                    setScaleProgress(value);
+                }                
+            });
+
+        vanishAnimatorSet = new AnimatorSet();
+        vanishAnimatorSet.addListener(new AnimatorListenerAdapter() {
+                public void onAnimationEnd(Animator animation) {
+                    if (listener != null) {
+                        listener.onSquareVanish();
+                    }
+                }
+            });
+
+        vanishAnimatorSet.setDuration(300);
+        vanishAnimatorSet.playTogether(rotateAnimator,
+                                       scaleAnimator);
+
+
+        scaleOutAnimator = ValueAnimator.ofFloat(0f, 1f);
+
+        scaleOutAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    float value = (float) animator.getAnimatedValue();
+                    setScaleProgress(value);
+                }
+            });
+
+        alphaOnAnimator = ValueAnimator.ofFloat(0f, 1f);
+        // alphaOnAnimator.setDuration(500);
+        // alphaOnAnimator.setInterpolator(new AccelerateInterpolator(2));
+
+        alphaOnAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    float value = (float) animator.getAnimatedValue();
+                    setAlphaProgress(value);
+                }
+            });
+
+        popAnimatorSet = new AnimatorSet();
+        popAnimatorSet.playTogether(scaleOutAnimator,
+                                    alphaOnAnimator);
+
+        popAnimatorSet.setDuration(300);
+        // popAnimator.setInterpolator(new DecelerateInterpolator(2));
+
+        popAnimatorSet.addListener(new AnimatorListenerAdapter() {
+                public void onAnimationEnd(Animator animation) {
+                    if (listener != null) {
+                        listener.onSquarePop();
+                    }
+                }
+            });
+
+        shakeAnimator = ValueAnimator.ofFloat(0f, 1f);
+        shakeAnimator.setDuration(300);
+        shakeAnimator.setInterpolator(new CycleInterpolator(3));
+
+        shakeAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    float value = (float) animator.getAnimatedValue();
+                    setRotateProgress(value * maxRotateShake);
+                }
+            });
+
+        markAnimator = ValueAnimator.ofFloat(1f, 0.9f);
+        // markAnimator.setDuration(1000);
+        markAnimator.setInterpolator(new CycleInterpolator(1));
+
+        markAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    float value = (float) animator.getAnimatedValue();
+                    // bunny bounce
+                    // 1.1 -> 0.9
+                    if (value > 1f) {
+                        value = 2f - value;
+                    }
+                    setScaleProgress(value);
+                }
+            });
+    }
+
+    public boolean getVisible() {
+        return isVisible;
     }
 
     public boolean getMarked() {
@@ -103,18 +237,22 @@ public class SquareView extends View
         return mLetter;
     }
 
-    public void setMark() {
-        boolean tmp = isMarked;
-        isMarked = true;
-        if (tmp != isMarked)
+    public void setMark(boolean marked) {
+        if (isMarked != marked) {
+            isMarked = marked;
             invalidateAnimation();
+        }
+
     }
 
-    public void resetMark() {
-        boolean tmp = isMarked;
-        isMarked = false;
-        if (tmp != isMarked)
-            invalidateAnimation();
+    public void setVisible(boolean visible) {
+        if (isVisible != visible) {
+            isVisible = visible;
+
+            if (!isVisible) {
+                vanishAnimatorSet.start();
+            }
+        }
     }
 
     public void setText(String s) {
@@ -122,13 +260,41 @@ public class SquareView extends View
         invalidate();
     }
 
+    public void popText(String s) {
+        this.mLetter = s;
+        isVisible = true;
+        rotateProgress = 0;
+
+        popAnimatorSet.start();
+    }
+
+    public void shake() {
+        shakeAnimator.start();
+    }
+
+    public void setRotateProgress(float rotateProgress) {
+        this.rotateProgress = rotateProgress;
+        postInvalidate();
+    }
+
+    public void setScaleProgress(float scaleProgress) {
+        this.scaleProgress = scaleProgress;
+        postInvalidate();
+    }
+
+    public void setAlphaProgress(float alphaProgress) {
+        this.alphaProgress = alphaProgress;
+        postInvalidate();
+    }
+
     private void invalidateAnimation() {
         if (isMarked) {
             squareAnimator.start();
             textAnimator.start();
+            markAnimator.start();
         } else {
             squareAnimator.reverse();
-            textAnimator.reverse();            
+            textAnimator.reverse();
         }
     }
 
@@ -157,18 +323,40 @@ public class SquareView extends View
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         squareBounds = new RectF(0, 0, w, h);
         textSize = TEXT_SIZE * getResources().getDisplayMetrics().scaledDensity;
+        tempBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        tempCanvas = new Canvas(tempBitmap);
     }
 
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawRoundRect(squareBounds, 30, 30, squarePaint);
 
         float width = squareBounds.width();
         float height = squareBounds.height();
 
         textPaint.setTextSize(this.textSize);
         textPaint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(mLetter, width / 2f, height / 2f - ((textPaint.descent() + textPaint.ascent()) / 2f), textPaint);
+
+        //tempCanvas.drawRoundRect(squareBounds, 30, 30, squarePaint);
+        tempCanvas.drawOval(squareBounds, squarePaint);
+
+        tempCanvas.drawText(mLetter, width / 2f, height / 2f - ((textPaint.descent() + textPaint.ascent()) / 2f), textPaint);
+
+        canvas.rotate(rotateProgress, width / 2f, height / 2f);
+
+        canvas.scale(scaleProgress, scaleProgress, width / 2f, height / 2f);
+
+        alphaPaint.setAlpha((int)(alphaProgress * 0xFF));
+
+        canvas.drawBitmap(tempBitmap, 0, 0, alphaPaint);
+    }
+
+    public void setAnimationListener(SquareAnimationListener listener) {
+        this.listener = listener;
+    }
+
+    public interface SquareAnimationListener {
+        public void onSquarePop();
+        public void onSquareVanish();
     }
 }
 

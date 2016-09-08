@@ -6,22 +6,22 @@
               android:background="@color/primary"
               >
 
-  <LinearLayout
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:layout_above="@id/anagramLayout"
-      android:background="@color/accent"
-      >
+  <!-- <LinearLayout -->
+  <!--     android:layout_width="fill_parent" -->
+  <!--     android:layout_height="wrap_content" -->
+  <!--     android:layout_above="@id/anagramLayout" -->
+  <!--     android:background="@color/accent" -->
+  <!--     > -->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:id="@+id/wordText"
-        style="@style/text1"
-        />    
+  <!--   <TextView -->
+  <!--       android:layout_width="wrap_content" -->
+  <!--       android:layout_height="wrap_content" -->
+  <!--       android:layout_gravity="center" -->
+  <!--       android:id="@+id/wordText" -->
+  <!--       style="@style/text1" -->
+  <!--       />     -->
 
-  </LinearLayout>
+  <!-- </LinearLayout> -->
 
   <LinearLayout
       android:id="@+id/anagramLayout"
