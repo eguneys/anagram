@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <color name="mp_50">#fffdfb</color>
-  <color name="mp_100">#f9d1b5</color>
-  <color name="mp_200">#f5b081</color>
-  <color name="mp_300">#ef873f</color>
-  <color name="mp_400">#ed7522</color>
-  <color name="mp_500">#df6612</color>
-  <color name="mp_600">#c35910</color>
-  <color name="mp_700">#a64c0d</color>
-  <color name="mp_800">#8a3f0b</color>
-  <color name="mp_900">#6e3209</color>
-  <color name="mp_A100">#fffdfb</color>
-  <color name="mp_A200">#f9d1b5</color>
-  <color name="mp_A400">#ed7522</color>
-  <color name="mp_A700">#a64c0d</color>
-
+  <color name="gunmetal">#FF2B2D42</color>
+  <color name="coolgrey">#FF8D99AE</color>
+  <color name="antiwhite">#FFEDF2F4</color>
+  <color name="imperialred">#FFEF233C</color>
+  <color name="applered">#FFD90429</color>
 
   <color name="primary">#E91E63</color>
   <color name="primary_light">#F8BBD0</color>
@@ -27,27 +17,4 @@
   <color name="secondary_text_light">#8A000000</color>
   <color name="disabled_text_light">#61000000</color>
 
-  <color name="primary_text_dark">#FFFFFFFF</color>
-  <color name="secondary_text_dark">#46FFFFFF</color>
-  <color name="disabled_text_dark">#80FFFFFF</color>
-
-  <style name="PrimaryText">
-    <item name="android:textColor">@color/primary_text_dark</item>
-  </style>
-  <style name="SecondaryText">
-    <item name="android:textColor">@color/secondary_text_dark</item>
-  </style>
-  <style name="DisabledText">
-    <item name="android:textColor">@color/disabled_text_dark</item>
-  </style>
-
-  <style name="PrimaryText.Light">
-    <item name="android:textColor">@color/primary_text_light</item>
-  </style>
-  <style name="SecondaryText.Light">
-    <item name="android:textColor">@color/secondary_text_light</item>
-  </style>
-  <style name="DisabledText.Light">
-    <item name="android:textColor">@color/disabled_text_light</item>
-  </style>
 </resources>

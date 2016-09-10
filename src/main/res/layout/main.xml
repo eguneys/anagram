@@ -3,7 +3,7 @@
               xmlns:custom="http://schemas.android.com/apk/res/com.example.oyun"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
-              android:background="@color/primary"
+              android:background="@color/coolgrey"
               >
 
   <!-- <LinearLayout -->
@@ -29,7 +29,7 @@
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
-      android:background="@color/accent"
+      android:background="@color/gunmetal"
       >
     <TextView
         android:layout_width="wrap_content"
