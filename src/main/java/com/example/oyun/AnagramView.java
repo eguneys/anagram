@@ -91,6 +91,9 @@ public class AnagramView extends GridLayout
 
         for (int i : allSquares) {
             int randomI = allSquaresShuffle.get(i);
+            int row = i / 3;
+            int col = i % 3;
+            ss[i].popDelay(row * 10 + col * 30);
             ss[i].popText(this.mAnagram.charAt(randomI) + "");
         }
         invalidate();

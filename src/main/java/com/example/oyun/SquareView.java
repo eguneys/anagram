@@ -289,6 +289,10 @@ public class SquareView extends View
         popAnimatorSet.start();
     }
 
+    public void popDelay(long delay) {
+        popAnimatorSet.setStartDelay(delay);
+    }
+
     public void shake() {
         shakeAnimator.start();
     }
