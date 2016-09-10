@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 
+import android.view.GestureDetector;
+
 import android.widget.GridLayout;
 
 
@@ -25,6 +27,8 @@ import java.util.ArrayList;
 
 public class AnagramView extends GridLayout
 {
+
+    private GestureDetector mDetector;
 
     private MarkedSquareListener listener;
 
@@ -61,6 +65,7 @@ public class AnagramView extends GridLayout
     private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.view_anagram, this, true);
 
+        mDetector = new GestureDetector(new CustomGestureDetector());
         
         GridLayout layout = (GridLayout) findViewById(R.id.grid1);
         layout.setClipChildren(false);
@@ -99,6 +104,15 @@ public class AnagramView extends GridLayout
         invalidate();
     }
 
+    public void invalidateMarks() {
+        for (int i : allSquares) {
+            ss[i].setMark(false);
+        }
+        for (int i : markedSquares) {
+            ss[i].setMark(true);
+        }
+    }
+
 
     public String getMarkedSquares() {
         StringBuilder sb = new StringBuilder();
@@ -109,6 +123,10 @@ public class AnagramView extends GridLayout
     }
 
     public boolean onTouchEvent(MotionEvent event) {
+        if (mDetector.onTouchEvent(event)) {
+            return true;
+        }
+
         int eventX = (int) event.getX();
         int eventY = (int) event.getY();
 
@@ -168,6 +186,27 @@ public class AnagramView extends GridLayout
             break;
         }
         return true;
+    }
+
+    class CustomGestureDetector extends GestureDetector.SimpleOnGestureListener {
+
+        private static final int SWIPE_THRESHOLD = 120;
+        private static final int SWIPE_VELOCITY_THRESHOLD = 400;
+
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float vX, float vY) {
+            float diffX = e2.getX() - e1.getX();
+            if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(vX) > SWIPE_VELOCITY_THRESHOLD) {
+                onSwipe();
+                return true;
+            }
+            return false;
+        }
+
+        public void onSwipe() {
+            setAnagram(getAnagram());
+            markedSquares.clear();
+            invalidateMarks();
+        }
     }
 
     public void setMarkedSquareListener(MarkedSquareListener listener) {
