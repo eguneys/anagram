@@ -35,19 +35,27 @@ public class SquareView extends View
     private SquareAnimationListener listener;
 
     private static final int TEXT_SIZE = 50;
-    private static final int TEXT_COLOR = 0xFFFFFFFF;
-    private static final int START_COLOR = 0xFF000000;
+    private static final int START_COLOR = 0xFFFFFFFF;
+    private static final int SHADOW_COLOR = 0xFFCCCCCC;
+
+    private static final int TEXT_COLOR = 0xFFBF0000;
+    private static final int TEXT_SHADOW_COLOR = 0xFF7F0000;
+
+
 
 
     private float maxRotateShake = 8;
     private float maxRotateDegrees = 45;
     private long vanishScaleDelay = 100;
 
+    private RectF shadowBounds;
     private RectF squareBounds;
     private float textSize;
 
     private Bitmap tempBitmap;
     private Canvas tempCanvas;
+
+    private Paint shadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private Paint squarePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -105,19 +113,32 @@ public class SquareView extends View
         squarePaint.setStyle(Paint.Style.FILL);
         squarePaint.setColor(START_COLOR);
 
+        shadowPaint.setStyle(Paint.Style.FILL);
+        shadowPaint.setColor(SHADOW_COLOR);
+
         textPaint.setColor(TEXT_COLOR);
         Typeface typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
         textPaint.setTypeface(typeface);
 
         final ArgbEvaluator argbEvaluator = new ArgbEvaluator();
 
-        squareAnimator = ValueAnimator.ofObject(argbEvaluator, START_COLOR, TEXT_COLOR).setDuration(200);
-        textAnimator = ValueAnimator.ofObject(argbEvaluator, TEXT_COLOR, START_COLOR).setDuration(200);
+        squareAnimator = ValueAnimator.ofObject(argbEvaluator, START_COLOR, TEXT_COLOR).setDuration(150);
+        textAnimator = ValueAnimator.ofObject(argbEvaluator, TEXT_COLOR, START_COLOR).setDuration(150);
 
         squareAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animator) {
                     int value = (int) animator.getAnimatedValue();
                     setSquareColor(value);
+                }
+            });
+
+        squareAnimator.addListener(new AnimatorListenerAdapter() {
+                public void onAnimationEnd(Animator animator) {
+                    if (isMarked) {
+                        shadowPaint.setColor(TEXT_SHADOW_COLOR);
+                    } else {
+                        shadowPaint.setColor(SHADOW_COLOR);
+                    }
                 }
             });
 
@@ -210,7 +231,7 @@ public class SquareView extends View
 
         markAnimator = ValueAnimator.ofFloat(1f, 0.9f);
         // markAnimator.setDuration(1000);
-        markAnimator.setInterpolator(new CycleInterpolator(1));
+        markAnimator.setInterpolator(new CycleInterpolator(0.5f));
 
         markAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animator) {
@@ -321,7 +342,8 @@ public class SquareView extends View
     }
 
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
-        squareBounds = new RectF(0, 0, w, h);
+        squareBounds = new RectF(0, 0, w, h - 5);
+        shadowBounds = new RectF(0, 0, w, h);
         textSize = TEXT_SIZE * getResources().getDisplayMetrics().scaledDensity;
         tempBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         tempCanvas = new Canvas(tempBitmap);
@@ -337,6 +359,7 @@ public class SquareView extends View
         textPaint.setTextAlign(Paint.Align.CENTER);
 
         //tempCanvas.drawRoundRect(squareBounds, 30, 30, squarePaint);
+        tempCanvas.drawOval(shadowBounds, shadowPaint);
         tempCanvas.drawOval(squareBounds, squarePaint);
 
         tempCanvas.drawText(mLetter, width / 2f, height / 2f - ((textPaint.descent() + textPaint.ascent()) / 2f), textPaint);
