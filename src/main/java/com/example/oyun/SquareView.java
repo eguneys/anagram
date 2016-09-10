@@ -55,7 +55,9 @@ public class SquareView extends View
     private Bitmap tempBitmap;
     private Canvas tempCanvas;
 
-    private Paint shadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private Paint shadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG |
+                                          Paint.FILTER_BITMAP_FLAG |
+                                         Paint.DITHER_FLAG);
 
     private Paint squarePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
