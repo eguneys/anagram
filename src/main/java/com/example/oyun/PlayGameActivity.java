@@ -16,8 +16,17 @@ import android.content.Intent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayGameActivity extends Activity
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
+
+public class PlayGameActivity extends AppCompatActivity
 {
+
+    TextView wordText;
+    TextView anagramText;
+    AnagramView anagramView;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -25,64 +34,48 @@ public class PlayGameActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.play);
 
-        View table1 = findViewById(R.id.table1);
-        // table1.setOnTouchListener(new View.OnTouchListener() {
-        //         Rect rect = new Rect();
-        //         View s1 = findViewById(R.id.t1);
-        //         View s2 = findViewById(R.id.t2);
-        //         View s3 = findViewById(R.id.t3);
-        //         View s11 = findViewById(R.id.t11);
-        //         View s12 = findViewById(R.id.t12);
-        //         View s13 = findViewById(R.id.t13);
-        //         View s21 = findViewById(R.id.t21);
-        //         View s22 = findViewById(R.id.t22);
-        //         View s23 = findViewById(R.id.t23);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        //         View[] ss = {
-        //                 s1, s2, s3,
-        //                     s11, s12, s13,
-        //                     s21, s22, s23
-        //                     };
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
-        //         public boolean onTouch(View v, MotionEvent event) {
-        //             int eventX = (int) event.getX();
-        //             int eventY = (int) event.getY();
 
-        //             int action = event.getAction();
+        anagramText = (TextView) findViewById(R.id.text1);
+        anagramView = (AnagramView) findViewById(R.id.anagram1);
 
-        //             if (action == MotionEvent.ACTION_DOWN) {
-        //                 System.out.println("down");
-        //             } else if (action == MotionEvent.ACTION_UP) {
-        //                 for (int i = 0; i < ss.length; i++) {
-        //                     showSquare(ss[i]);
-        //                 }
-        //             }
-        //             for (int i = 0; i < ss.length; i++) {
-        //                 hideSquare(ss[i], event);
-        //             }
-        //             return true;
-        //         }
+        anagramView.setAnagram("ANAGRAM");
 
-        //         public void showSquare(View s1) {
-        //             // anim.setTarget(s1);
-        //             // anim.setEvaluator(new ArgbEvaluator());
-        //             // anim.start();
-        //         }
+        final String[] words = new String[] { "ANAGRAM",
+                                              "KABURGA",
+                                              "KABARMA",
+                                              "KABLOCU",
+                                              "EFLATUN",
+                                              "EKONOMI",
+                                              "ELEMENT"};
 
-        //         public void hideSquare(View s1, MotionEvent event) {
-        //             int eventX = (int) event.getX();
-        //             int eventY = (int) event.getY();
+        anagramView.setMarkedSquareListener(new AnagramView.MarkedSquareListener() {
+                java.util.Random gen = new java.util.Random();
 
-        //             s1.getHitRect(rect);
-        //             if (rect.contains(eventX, eventY)) {
-        //                 // anim.reverse();
-        //             }
-        //         }
-        //     });
-    }
+                public void onMarkedCancel(String markedSquares) {
+                    anagramText.animate().alpha(0).setListener(new android.animation.AnimatorListenerAdapter() {
+                            public void onAnimationEnd(android.animation.Animator animator) {
+                                anagramText.setText("");
+                                anagramText.setAlpha(1);
+                                //anagramView.setAnagram(anagramView.getAnagram());
+                            }
+                        });
+                }
 
-    public void playGame(View view) {
-        Intent intent = new Intent(this, PlayGameActivity.class);
-        startActivity(intent);
+                public void onMarkedChange(String markedSquares) {
+                    anagramText.setText(markedSquares);
+
+                }
+
+                public void onMarkedSuccess() {
+                    int rWord = gen.nextInt(words.length - 1);
+                    anagramView.setAnagram(words[rWord]);
+                }
+            });
     }
 }
